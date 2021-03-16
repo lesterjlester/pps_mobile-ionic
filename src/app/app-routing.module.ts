@@ -30,6 +30,10 @@ const routes: Routes = [
     path: 'report',
     loadChildren: () => import('./views/landing/report/report.module').then( m => m.ReportPageModule)
   },
+  {
+    path: 'profile',
+    loadChildren: () => import('./views/landing/profile/profile.module').then( m => m.ProfilePageModule)
+  },
 
 ];
 @NgModule({
