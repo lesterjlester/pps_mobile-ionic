@@ -11,11 +11,12 @@ import { IonicStorageModule } from '@ionic/storage';
 
 import { AuthGuard } from './services/auth-guard.service';
 import { AuthenticationService } from './services/Authentication.service';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,  IonicStorageModule.forRoot()],
-  providers: [SplashScreen, StatusBar, AuthGuard, AuthenticationService,{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [SplashScreen, StatusBar, AuthGuard, AuthenticationService, Geolocation, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
