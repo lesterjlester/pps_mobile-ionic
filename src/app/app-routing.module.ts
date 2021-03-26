@@ -34,10 +34,10 @@ const routes: Routes = [
     path: 'profile',
     loadChildren: () => import('./views/landing/profile/profile.module').then( m => m.ProfilePageModule)
   },
-  // {
-  //   path: 'maps',
-  //   loadChildren: () => import('./views/landing/maps/maps.module').then( m => m.MapsPageModule)
-  // },
+  {
+    path: 'maps',
+    loadChildren: () => import('./views/maps/maps.module').then( m => m.MapsPageModule)
+  },
 
 ];
 @NgModule({

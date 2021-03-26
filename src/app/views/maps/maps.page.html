@@ -1,0 +1,16 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Tracking Location PPS</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content padding>
+  <div id="map" #map> 
+  </div> 
+  <ion-fab  vertical="bottom" horizontal="start" slot="fixed" style="margin-top: 10px;">
+    <ion-button color="danger" shape="round" (click)="send()">Send Incident</ion-button> 
+  </ion-fab>
+</ion-content>
