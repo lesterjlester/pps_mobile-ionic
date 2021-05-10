@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Notification & Announcement</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen>
+  <ion-list>
+    <ion-list-header>
+      <ion-item-divider color="secondary">
+        <ion-label>
+          Notification(s)
+        </ion-label>
+      </ion-item-divider>
+    </ion-list-header>
+
+
+    <ion-item text-wrap (click)="readUrl()">
+      <ion-avatar slot="start">
+        <img
+          src="https://cdn0.iconfinder.com/data/icons/kameleon-free-pack-rounded/110/Bell-512.png">
+      </ion-avatar>
+      <ion-badge color="danger" slot="end">Read</ion-badge>
+      <ion-label>  
+        <p>You was tag by admin</p>
+        <h3>June 12, 2021</h3> 
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-list-header>
+      <ion-item-divider color="danger">
+        <ion-label>
+          Annoucement
+        </ion-label>
+      </ion-item-divider>
+    </ion-list-header>
+
+    <ion-item text-wrap>
+      <ion-avatar slot="start">
+        <img
+          src="https://cdn0.iconfinder.com/data/icons/kameleon-free-pack-rounded/110/Bell-512.png">
+      </ion-avatar>
+      <ion-badge color="danger" slot="end">Read</ion-badge>
+      <ion-label>  
+        <p>You was tag by admin</p>
+        <h3>June 12, 2021</h3> 
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

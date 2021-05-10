@@ -12,7 +12,7 @@ const routes: Routes = [
   },   {
     path: 'landing',
     loadChildren: () => import('./views/landing/tabs/tabs.module').then( m => m.TabsPageModule),
-    canActivate: [AuthGuard]
+    // canActivate: [AuthGuard]
   },
   {
     path: 'driver',
@@ -37,6 +37,14 @@ const routes: Routes = [
   {
     path: 'maps',
     loadChildren: () => import('./views/maps/maps.module').then( m => m.MapsPageModule)
+  },
+  {
+    path: 'notification',
+    loadChildren: () => import('./views/landing/notification/notification.module').then( m => m.NotificationPageModule)
+  },
+  {
+    path: 'notification-deatil',
+    loadChildren: () => import('./views/landing/notification-deatil/notification-deatil.module').then( m => m.NotificationDeatilPageModule)
   },
 
 ];

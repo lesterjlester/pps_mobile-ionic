@@ -5,40 +5,22 @@
 </ion-header>
 
 <ion-content fullscreen>
-  <ion-list> 
-    <ion-item>
+  <ion-list *ngIf="travelList.length > 0"> 
+    <ion-item *ngFor="let item of travelList; index as i">
       <ion-avatar slot="start">
         <img src="https://cdn1.vectorstock.com/i/1000x1000/15/85/location-icon-gps-marker-symbol-map-pin-icon-vector-28471585.jpg">
       </ion-avatar>
       <ion-label>
-        <h2>Sto Libjo Paranque City</h2>
-        <h3 style="font-weight:700">January 23, 2021 | <span style="color:green">Approved</span></h3> 
+        <h2>{{item.dest}}</h2>
+        <h3 style="font-weight:700">{{item.datetravel}} | <span style="color:green">{{item.status}}</span></h3> 
       </ion-label>
-      <ion-button slot="end" shape="round" (click)="open_maps()">view  <ion-icon name="pin" slot="start"></ion-icon></ion-button> 
-    </ion-item>
-
-    <ion-item>
-      <ion-avatar slot="start">
-        <img src="https://cdn1.vectorstock.com/i/1000x1000/15/85/location-icon-gps-marker-symbol-map-pin-icon-vector-28471585.jpg">
-      </ion-avatar>
-      <ion-label>
-        <h2>Sto Libjo Paranque City</h2>
-        <h3 style="font-weight:700">January 23, 2021 | <span style="color:green">Approved</span></h3> 
-      </ion-label>
-      <ion-button slot="end" shape="round">view  <ion-icon name="pin" slot="start"></ion-icon></ion-button> 
-    </ion-item>
-
-    <ion-item>
-      <ion-avatar slot="start">
-        <img src="https://cdn1.vectorstock.com/i/1000x1000/15/85/location-icon-gps-marker-symbol-map-pin-icon-vector-28471585.jpg">
-      </ion-avatar>
-      <ion-label>
-        <h2>Sto Libjo Paranque City</h2>
-        <h3 style="font-weight:700">January 23, 2021 | <span style="color:green">Approved</span></h3> 
-      </ion-label>
-      <ion-button slot="end" shape="round"><ion-icon name="pin" slot="start"></ion-icon>view  </ion-button> 
-    </ion-item>
- 
+      <ion-button slot="end" shape="round" (click)="open_maps(item)">view  <ion-icon name="pin" slot="start"></ion-icon></ion-button> 
+    </ion-item>   
   </ion-list>
- 
+  <ion-card *ngIf="travelList.length === 0">
+    <ion-card-header> 
+      <ion-card-title class="ion-text-center">Empty List</ion-card-title>
+    </ion-card-header> 
+  </ion-card>
+  
 </ion-content>

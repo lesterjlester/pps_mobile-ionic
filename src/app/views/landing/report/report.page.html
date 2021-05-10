@@ -5,40 +5,22 @@
 </ion-header>
 
 <ion-content fullscreen>
-  <ion-list> 
-    <ion-item>
+  <ion-list *ngIf="incidentLogs.length > 0"> 
+    <ion-item *ngFor="let item of incidentLogs; index as i">
       <ion-avatar slot="start">
         <img src="https://cdn1.vectorstock.com/i/1000x1000/15/85/location-icon-gps-marker-symbol-map-pin-icon-vector-28471585.jpg">
       </ion-avatar>
       <ion-label>
-        <h2>Sto Libjo Paranque City</h2>
-        <h3 style="font-weight:700">January 23, 2021</h3> 
-      </ion-label>
-      <ion-button slot="end"  color='danger' shape="round">view</ion-button> 
-    </ion-item>
-
-    <ion-item>
-      <ion-avatar slot="start">
-        <img src="https://cdn1.vectorstock.com/i/1000x1000/15/85/location-icon-gps-marker-symbol-map-pin-icon-vector-28471585.jpg">
-      </ion-avatar>
-      <ion-label>
-        <h2>Sto Libjo Paranque City</h2>
-        <h3 style="font-weight:700">January 23, 2021</h3> 
-      </ion-label>
-      <ion-button slot="end" color='danger' shape="round">view</ion-button> 
-    </ion-item>
-
-    <ion-item>
-      <ion-avatar slot="start">
-        <img src="https://cdn1.vectorstock.com/i/1000x1000/15/85/location-icon-gps-marker-symbol-map-pin-icon-vector-28471585.jpg">
-      </ion-avatar>
-      <ion-label>
-        <h2>Sto Libjo Paranque City</h2>
-        <h3 style="font-weight:700">January 23, 2021</h3> 
-      </ion-label>
-      <ion-button slot="end" color='danger' shape="round">view</ion-button> 
-    </ion-item>
+        <h2>{{item.title}}</h2>
+        <p>{{item.content}}</p>
+        <h3 style="font-weight:700">{{item.createdAt}}</h3> 
+      </ion-label> 
+    </ion-item> 
  
   </ion-list>
- 
+  <ion-card *ngIf="incidentLogs.length === 0">
+    <ion-card-header> 
+      <ion-card-title class="ion-text-center">Empty List</ion-card-title>
+    </ion-card-header> 
+  </ion-card>
 </ion-content>

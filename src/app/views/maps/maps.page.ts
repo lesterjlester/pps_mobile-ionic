@@ -1,8 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { LoadingController } from '@ionic/angular';
-import { ActionSheetController, AlertController  } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
+import { ActionSheetController, AlertController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { AuthenticationService } from '../../services/Authentication.service';
+import { NavController } from '@ionic/angular';
 import {
   MapsService
 } from '../../services/maps.service';
@@ -22,11 +25,12 @@ declare var google;
   templateUrl: './maps.page.html',
   styleUrls: ['./maps.page.scss'],
 })
-export class MapsPage implements OnInit { 
-  marker: any=google.maps.Marker;
+export class MapsPage implements OnInit {
+  marker: any = google.maps.Marker;
   map: any;
-  speed: any = 0; 
-  cont: any=0;
+  speed: any = 0;
+  cont: any = 0;
+  new_destination: any;
 
   driver_pin: any;
   destination_pin: any;
@@ -40,22 +44,26 @@ export class MapsPage implements OnInit {
   gmap: GoogleMap;
   museumData = [];
 
-  constructor(private geolocation: Geolocation,public loadingController: LoadingController, private mapservice: MapsService,
-     public actionSheetController: ActionSheetController, public alertController: AlertController, private http: HttpClient) { }
+  constructor(private geolocation: Geolocation, public loadingController: LoadingController, private mapservice: MapsService,
+    private navController: NavController,
+    public actionSheetController: ActionSheetController, public alertController: AlertController, private http: HttpClient,
+    private router: Router, private authService: AuthenticationService, private toastController: ToastController) {
+    let params = this.router.getCurrentNavigation().extras.state;
+    this.new_destination = params.item;
+  }
 
   ngOnInit() {
     this.launch_gmaps();
-  } 
+  }
 
-  getPosition(){
-  
-    this.mapservice.get_location().then((position : any) => {
+  getPosition() {
+    this.mapservice.get_location().then((position: any) => {
       let origin = { lat: position.latitude, lng: position.longitude };
-      let destination = { lat: 14.466667, lng: 121.016667 } 
+      let destination = this.new_destination;
       this.callPoly(origin, destination);
       this.drawMarkers(origin, destination);
     });
-     }
+  }
 
 
   centerZoom(latlng) {
@@ -68,19 +76,6 @@ export class MapsPage implements OnInit {
     this.gmap.animateCamera(position).then(res => {
       // this.detailsBox = true;
       // this.gmap.animateCameraZoomOut();
-    });
-  } 
-  addMarker() {
-    let icondata: any = {
-      url: 'assets/map/destination.png',
-      size: {
-        width: 48,
-        height: 48
-      }
-    }
-    this.gmap.addMarker({
-      icon: icondata,
-      position: { lat: 14.537752, lng: 121.001381 }
     });
   }
   addPickup() {
@@ -110,8 +105,6 @@ export class MapsPage implements OnInit {
   }
 
   launch_gmaps() {
-    
-    console.log("MAP - Launching G MAPS");
     let mapOptions: GoogleMapOptions = {
       camera: {
         target: {
@@ -133,111 +126,39 @@ export class MapsPage implements OnInit {
     this.gmap.setMyLocationEnabled(true);
     this.gmap.setPadding(50, 20, 150, 20);
     this.gmap.one(GoogleMapsEvent.MAP_READY).then(() => {
-      console.log("Map Ready"); 
-      this.getPosition();  
-      // this.initApp();
-      // this.my_position = {
-      //   lat : this.mapservice.my_position.latitude,
-      //   lng: this.mapservice.my_position.longitude
-      // }
-      // this.startGo();
-      // var initCheck = true;
-      // this.watchWatch = this.watch_job_ready().subscribe((rdy) => {
-      //   if (rdy && initCheck){
-      //     // this.watch_rider();
-      //     this.pantome();
-      //     initCheck = false;
-      //   }
-      // });
+      console.log("Map Ready");
+      this.getPosition();
+      this.run_interval(); 
     });
   };
-   
-
-
-  // ngAfterViewInit(): void { 
-  //   this.getPosition();
-  //   let mapOptions: GoogleMapOptions = {
-  //     camera: {
-  //       target: {
-  //         lat: 14.499142,
-  //         lng: 121.006297
-  //       },
-  //       zoom: 14
-  //     },
-  //     controls: {
-  //       mapToolbar: false
-  //     },
-  //     gestures: {
-  //       tilt: false,
-  //       rotate: false
-  //     }
-  //   }
-
-  //   this.gmap = GoogleMaps.create("map", mapOptions);
-  //   this.gmap.setMyLocationEnabled(true);
-  //   this.gmap.setPadding(50, 20, 150, 20);
-  //   this.gmap.one(GoogleMapsEvent.MAP_READY).then(() => {
-  //     // this.watch_rider();
-  //     this.pantome();
-  //     // this.ongoing_jobs();
-  //     // this.initApp();
-  //   });
-
-
-  //   // this.gmap = GoogleMaps.create("map", mapOptions);
-  //   // this.gmap.setMyLocationEnabled(true);
-  //   // this.gmap.setPadding(50, 20, 150, 20);
-  //   // this.gmap.one(GoogleMapsEvent.MAP_READY).then(() => {
-  //   //   this.centerZoom({
-  //   //     lat: 14.499142,
-  //   //     lng: 121.006297
-  //   //   });
-  //   //   this.getData();
-  //   //   this.addMarker();
-  //   //   this.addPickup();
-  //   // }); 
-  // }
-
-  callPoly(origin, destination) { 
+ 
+  callPoly(origin, destination) {
     var url = "directions/json?avoid=tolls&" +
-    "origin=" + origin.lat + ',' + origin.lng + "" +
-    "&destination=" + destination.lat + ',' + destination.lng;
-
-    this.centerZoom([origin, destination]); 
+      "origin=" + origin.lat + ',' + origin.lng + "" +
+      "&destination=" + destination.lat + ',' + destination.lng;
+    this.centerZoom([origin, destination]);
     var wayPointsArray = []
     wayPointsArray.push(origin);
-
-
     this.google_api(url).then(
-      (data: any) => { 
+      (data: any) => {
         var response = data;
-        var geoCodedPoints = response.routes[0].overview_polyline.points;
-        
-        // this.distance = response.routes[0].legs[0].distance.text;
-        // this.duration = response.routes[0].legs[0].duration.text; 
-        wayPointsArray =  Encoding.decodePath(geoCodedPoints);
+        var geoCodedPoints = response.routes[0].overview_polyline.points; 
+        wayPointsArray = Encoding.decodePath(geoCodedPoints);
         // google.maps.geometry.encoding.decodePath(geoCodedPoints); 
         var waypointsArr = [];
-        wayPointsArray.forEach(point => { 
-          if (point){
+        wayPointsArray.forEach(point => {
+          if (point) {
             waypointsArr.push(point)
           }
-        });  
+        });
         this.drawDirections(waypointsArr);
-        // this.currentWaypoints = waypointsArr;
-        // this.recursiveAnimate(0);
-
-        // setTimeout(() => {
-        //   this.animatePoly(waypointsArr);
-        // },1000);
-
       }, err => {
         console.error(err);
       }
     );
   }
 
-  
+
   drawDirections(wayPointsArray, zindex = 2) {
     if (this.mainPoly) {
       this.mainPoly.setPoints(wayPointsArray);
@@ -258,17 +179,10 @@ export class MapsPage implements OnInit {
   }
 
 
-  drawMarkers(pin_pick, pin_del) { 
+  drawMarkers(pin_pick, pin_del) {
     if (this.driver_pin) {
       this.driver_pin.setPosition(pin_pick);
-    } else {
-      // let icondata: any = {
-      //   url: 'assets/map/destination.png',
-      //   size: {
-      //     width: 48,
-      //     height: 48
-      //   }
-      // }
+    } else { 
       var icondata: any = {
         url: './assets/map/destination.png',
         size: {
@@ -302,94 +216,38 @@ export class MapsPage implements OnInit {
     }
 
   }
+ 
 
 
-  pantome() {
-    return new Promise(resolve => { 
-      LocationService.getMyLocation({
-        enableHighAccuracy: true
-      }).then((pos: MyLocation) => {
-      console.log(pos,'exexe')
-        // alert("panto POS: " + JSON.stringify(pos));
-        // this.rider_position = {
-        //   latitude : pos.latLng.lat,
-        //   longitude : pos.latLng.lng,
-        //   // accuracy : pos.accuracy,
-        //   // bearing : pos.bearing,
-        //   // altitude : pos.altitude,
-        //   // speed : pos.speed
-        // };
 
-        // if (pos.speed)
-        //   this.rider_position.speed = pos.speed;
-        // if (pos.accuracy)
-        //   this.rider_position.accuracy = pos.accuracy;
-        // if (pos.altitude)
-        //   this.rider_position.altitude = pos.altitude;
-
-        // console.log("Pan to me");
-        // console.log(this.rider_position);
-        
-        // this.current_latlng = pos.latLng;
-        // this.mapservice.convert_place_to_latlng(pos.latLng).then(
-        //   (res: any) => {
-        //     console.log("Hey Check Province");
-        //     console.log(res);
-        //     if (res){
-        //       this.check_province = res;
-        //       this.showToast(this.check_province);
-        //     }
-        //     else{
-        //       this.showToast("failed to get location");
-        //     }
-        //   }
-        // ) 
-        let newpos: CameraPosition < {} > = {
-          target: pos.latLng,
-          tilt: 0,
-          zoom: 18,
-          duration: 1000
-        };
-        this.gmap.animateCamera(newpos);
-        resolve(true);
-      },err => {
-        resolve(false);
-        console.log("Address Not Found"); 
-      });
-    });
-  }
-
-
-  
-  run_interval(){
+  run_interval() {
     setInterval(() => {
-      this.mapservice.get_location().then((position : any) => { 
+      this.mapservice.get_location().then((position: any) => {
         console.log(position);
-            if (position.bearing){
-            this.driver_pin.setRotation(this.driver_pin.bearing)
-          }
-          if (position.heading){
-            this.driver_pin.setRotation(this.driver_pin.heading)
-          } 
+        if (position.bearing) {
+          this.driver_pin.setRotation(this.driver_pin.bearing)
+        }
+        if (position.heading) {
+          this.driver_pin.setRotation(this.driver_pin.heading)
+        }
       });
-    },10000)
+    }, 10000)
   }
-  
 
-  getData() {
-    let points = [
-      { lat: 14.537752, lng: 121.001381 },
-      { lat: 14.466667, lng: 121.016667 }
-    ];
-    this.gmap.addPolyline({
-      points: points,
-      'color': '#AA00FF',
-      'width': 10,
-      'geodesic': true
-    });
-  }
+
   send() {
     this.presentActionSheet();
+  }
+
+
+  savetoAdmin(data) { 
+    this.authService.postData(data, 'admin/incident/save').then((res) => {
+      if (res.success) {
+        this.presentToast(res.message);
+      } else {
+        this.presentToast(res.message);
+      }
+    })
   }
   async presentActionSheet() {
     const actionSheet = await this.actionSheetController.create({
@@ -400,19 +258,22 @@ export class MapsPage implements OnInit {
         role: 'destructive',
         icon: 'alert',
         handler: () => {
-          console.log('Delete clicked');
+          let data = { title: 'Flat Tire', content: 'Flat Tire' };
+          this.savetoAdmin(data);
         }
       }, {
         text: 'No Gas',
         icon: 'alert',
         handler: () => {
-          console.log('Share clicked');
+          let data = { title: 'No Gas', content: 'No Gas in the way' };
+          this.savetoAdmin(data);
         }
       }, {
         text: 'Accident',
         icon: 'alert',
         handler: () => {
-          console.log('Play clicked');
+          let data = { title: 'Accident', content: 'Encounter an Accident' };
+          this.savetoAdmin(data);
         }
       }, {
         text: 'Other Reason',
@@ -437,48 +298,56 @@ export class MapsPage implements OnInit {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Prompt!',
-      inputs: [ 
+      inputs: [
         {
           name: 'paragraph',
           id: 'paragraph',
           type: 'textarea',
           placeholder: 'Incident Reason'
-        } 
+        }
       ],
       buttons: [
         {
           text: 'Cancel',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: () => {
-            console.log('Confirm Cancel');
+          handler: (data) => {
+            console.log(data, 'Confirm Cancel');
           }
         }, {
           text: 'Ok',
-          handler: () => {
-            console.log('Confirm Ok');
+          handler: (data) => {
+            if (!data.paragraph) return alert('Invalid Reason!');
+            let val = { title: 'Accident', content: data.paragraph };
+            this.savetoAdmin(val);
           }
         }
       ]
-    });
-
+    }); 
     await alert.present();
   }
 
-  google_api(url){
-    return new Promise (resolve => {
-      var googleMapsApiKey = "AIzaSyCKo1jxVNB8oDgoLxcK6kUBBWFk6jWWKLI";
-      var google_api = "https://maps.googleapis.com/maps/api/" + url + "&key=" + googleMapsApiKey;
-      var xurl = "https://cors-anywhere.herokuapp.com/" + google_api; // bypass CORS
-      this.http.get(xurl).subscribe(
-        (res : any) => {
-          console.log(res,'resresresresresresres')
-          resolve(res);
-        },err => {
-          resolve(false);
+  google_api(url) {
+    return new Promise(resolve => {
+      var googleMapsApiKey = "AIzaSyDhlw6pbriuwr_Mb6KYkVlBar7KD1KTrOs"; 
+      var google_api = "https://maps.googleapis.com/maps/api/" + url + "&key=" + googleMapsApiKey; 
+      let param = {data: google_api};
+      this.authService.postData(param, 'map/getcoordinates').then((res) => {  
+        if (res.success) {
+          resolve(res.data);
+        } else {
+          this.presentToast(res.message);
         }
-      )
-      
+      }) 
     })
+  }
+  async presentToast(message) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      color: 'primary'
+    });
+    toast.present();
+    this.navController.navigateRoot(`/landing`)
   }
 }

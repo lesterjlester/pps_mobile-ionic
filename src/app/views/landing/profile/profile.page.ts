@@ -6,10 +6,12 @@ import { AuthenticationService } from '../../../services/Authentication.service'
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
-
+  userInfo= {};
   constructor(private authService: AuthenticationService) { }
-
-  ngOnInit() {
+   
+  async ngOnInit() {
+    let data = await this.authService.getStorages('USER_INFO'); 
+   this.userInfo = data;
   }
   logout() {
     this.authService.logout();

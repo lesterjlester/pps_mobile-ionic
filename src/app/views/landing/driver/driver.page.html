@@ -1,6 +1,6 @@
 <ion-header translucent>
   <ion-toolbar>
-    <ion-title>Driver List</ion-title>
+    <ion-title>Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,8 +11,8 @@
         <img  src="https://avatarfiles.alphacoders.com/149/thumb-149117.jpg"> 
       </ion-avatar>
       <ion-label class="ion-padding-start">
-        <h4><ion-text color="secondary"><b>Juan Dela Cruz</b></ion-text><br/>
-        <small class="font-weight-bold"><ion-text color="medium">34234234</ion-text></small></h4>
+        <h4><ion-text color="secondary"><b>{{userInfo?.lastname}}, {{userInfo?.firstname}}</b></ion-text><br/>
+        <small class="font-weight-bold"><ion-text color="medium">{{userInfo?.id}}</ion-text></small></h4>
       </ion-label>
     </ion-item>
   </div>
@@ -21,17 +21,17 @@
       <div class="d-flex align-items-space-between">
         <div class="ion-text-center">
           <span class="small_title">Vehicle</span><br/>
-          <ion-badge color="primary">Yamaha</ion-badge>
+          <ion-badge color="primary">BUS</ion-badge>
           <br/>
           <span class="small_title">Brand</span><br/>
-          <ion-badge color="primary">Mio</ion-badge>
+          <ion-badge color="primary">Minibus</ion-badge>
         </div>
         <div class="ion-text-center">
           <span class="small_title">Model</span><br/>
-          <ion-badge color="primary">YTX</ion-badge>
+          <ion-badge color="primary">ISUZU</ion-badge>
           <br/>
           <span class="small_title">Plate Number</span><br/>
-          <ion-badge color="primary">93454</ion-badge>
+          <ion-badge color="primary">A-93454</ion-badge>
         </div> 
       </div>  
     </ion-card-content>
@@ -41,26 +41,26 @@
       <ion-list-header>Other Information</ion-list-header>
       <ion-item>  
         <ion-label>
-          <h2>Username</h2> 
-          <h3>John Lester Castillo</h3> 
+          <h2>{{userInfo?.username}}</h2> 
+          <h3>{{userInfo?.email}}</h3> 
         </ion-label>
       </ion-item>
       <ion-item>  
         <ion-label>
-          <h2>Age</h2> 
-          <h3>12</h3> 
+          <h2>Birth Date</h2> 
+          <h3>{{userInfo?.bday}}</h3> 
         </ion-label>
       </ion-item>
       <ion-item>  
         <ion-label>
           <h2>Driver Type</h2> 
-          <h3>Hey</h3> 
+          <h3>{{userInfo?.driver_type}}</h3> 
         </ion-label>
       </ion-item>
       <ion-item>  
         <ion-label>
           <h2>Complete Address</h2> 
-          <h3>Bagong Buhay Naujan Oriental Mindoro</h3> 
+          <h3>{{userInfo?.address}}</h3> 
         </ion-label>
       </ion-item>  
     </ion-list>
