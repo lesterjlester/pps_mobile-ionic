@@ -7,11 +7,10 @@ import { AuthenticationService } from '../../../services/Authentication.service'
 })
 export class TabsPage implements OnInit {
   notifCount = 0;
-  constructor(private authService : AuthenticationService) { }
-
+  constructor(private authService : AuthenticationService) { } 
   ngOnInit() {
-    this.authService.getData('admin/notif/getList').then((res) => {
-      if (res.success) {
+    this.authService.getData('user/notification/list').then((res) => {
+      if (res.status == 'OK') {
         this.notifCount = res.data.length;
       }
     })

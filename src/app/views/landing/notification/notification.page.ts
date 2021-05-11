@@ -8,16 +8,22 @@ import { AuthenticationService } from '../../../services/Authentication.service'
 })
 export class NotificationPage implements OnInit { 
   notifList = [];
+  annoucementList = [];
   constructor(private router : Router, private authService: AuthenticationService) { } 
-  ngOnInit() { 
-    this.authService.getData('admin/notif/getList').then((res) => {
-      if (res.success) {
+  ngOnInit() {  
+    this.authService.getData('user/notification/list').then((res) => { 
+      if (res.status == 'OK') {
         this.notifList = res.data;
       }
-    })
+    });
+    this.authService.getData('admin/annoucement/list').then((res) => { 
+      if (res.status == 'OK') {
+        this.annoucementList = res.data;
+      }
+    }) 
   }
-  readUrl() {
-    let obj = {id: 1, title: 'This is the TItkle', content: 'Content Here!'}
+  readUrl(data) { 
+    let obj = data;
     this.router.navigateByUrl('notification-deatil', {
       state: {
         item: obj,
